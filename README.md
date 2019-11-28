@@ -2,7 +2,7 @@
   <img src="https://github.com/etienne-dldc/literal-parser/blob/master/design/logo.svg" width="597" alt="literal-parser logo">
 </p>
 
-# literal-parser
+# 🔎 literal-parser
 
 > A small library to parse JavaScript array/object literal.
 
