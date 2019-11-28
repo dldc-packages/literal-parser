@@ -1,5 +1,5 @@
 export interface InputStream {
-  next(): string;
+  next(count?: number): string;
   peek(length?: number): string;
   eof(): boolean;
   croak(msg: string): never;
@@ -17,15 +17,19 @@ export function InputStream(input: string): InputStream {
     croak,
   };
 
-  function next(): string {
-    const ch = input.charAt(pos++);
-    if (ch === '\n') {
-      line++;
-      col = 0;
-    } else {
-      col++;
+  function next(count: number = 1): string {
+    let val = '';
+    for (let i = 0; i < count; i++) {
+      const ch = input.charAt(pos++);
+      if (ch === '\n') {
+        line++;
+        col = 0;
+      } else {
+        col++;
+      }
+      val += ch;
     }
-    return ch;
+    return val;
   }
 
   function peek(length: number = 1): string {

@@ -26,6 +26,8 @@ describe('parse all sort of shape', () => {
     [`{ foo: true }`, { foo: true }],
     [`{ foo: false }`, { foo: false }],
     [`{ foo: 'l\\'orage' }`, { foo: `l'orage` }],
+    [`null`, null],
+    [`undefined`, undefined],
   ];
 
   SHAPES.forEach(([str, res]) => {

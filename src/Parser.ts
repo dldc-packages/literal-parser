@@ -41,35 +41,36 @@ function parse(file: string): any {
     if (isDigit(ch)) {
       return parseNumber();
     }
-    if (nextIsBooleanTrue()) {
-      input.next();
-      input.next();
-      input.next();
-      input.next();
+    if (isIdentifier('true')) {
+      skipIdentifier('true');
       return true;
     }
-    if (nextIsBooleanFalse()) {
-      input.next();
-      input.next();
-      input.next();
-      input.next();
-      input.next();
+    if (isIdentifier('false')) {
+      skipIdentifier('false');
       return false;
+    }
+    if (isIdentifier('null')) {
+      skipIdentifier('null');
+      return null;
+    }
+    if (isIdentifier('undefined')) {
+      skipIdentifier('undefined');
+      return undefined;
     }
     return input.croak(`Unexpected "${ch}"`);
   }
 
-  function nextIsBooleanTrue(): boolean {
-    if (input.peek(4) === 'true') {
-      const after = input.peek(5)[4];
-      return after === undefined || isNameChar(after) === false;
+  function skipIdentifier(identifier: string): string {
+    const next = input.next(identifier.length);
+    if (next !== identifier) {
+      input.croak(`Expected identifier "${identifier}" got "${next}"`);
     }
-    return false;
+    return next;
   }
 
-  function nextIsBooleanFalse(): boolean {
-    if (input.peek(5) === 'false') {
-      const after = input.peek(6)[5];
+  function isIdentifier(identifier: string): boolean {
+    if (input.peek(identifier.length) === identifier) {
+      const after = input.peek(identifier.length + 1)[identifier.length];
       return after === undefined || isNameChar(after) === false;
     }
     return false;
@@ -177,6 +178,8 @@ function parse(file: string): any {
       skipWhitespaces();
       obj[key] = value;
     }
+    skipWhitespacesAndComments();
+    maybeSkip(',');
     skipWhitespacesAndComments();
     skip('}');
     return obj;
