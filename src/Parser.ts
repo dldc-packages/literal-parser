@@ -6,6 +6,7 @@ export const Parser = {
 
 const SINGLE_QUOTE = "'";
 const DOUBLE_QUOTE = '"';
+const BACKTICK = '`';
 
 function parse(file: string): any {
   const input = InputStream(file);
@@ -13,6 +14,7 @@ function parse(file: string): any {
   return root();
 
   function root() {
+    skipWhitespacesAndComments();
     const expr = parseExpression();
     skipWhitespacesAndComments();
     if (input.eof()) {
@@ -33,7 +35,7 @@ function parse(file: string): any {
       input.next();
       return parseNumber(true);
     }
-    if (ch === SINGLE_QUOTE || ch === DOUBLE_QUOTE) {
+    if (ch === SINGLE_QUOTE || ch === DOUBLE_QUOTE || ch === BACKTICK) {
       return parseString(ch);
     }
     if (isDigit(ch)) {
@@ -103,6 +105,8 @@ function parse(file: string): any {
       input.next();
       input.next();
       skipUntil('*/');
+      input.next();
+      input.next();
       return true;
     }
     return false;
@@ -116,17 +120,16 @@ function parse(file: string): any {
     if (!isWhitspace(input.peek())) {
       return false;
     }
-    while (isWhitspace(input.peek())) {
+    while (!input.eof() && isWhitspace(input.peek())) {
       input.next();
     }
     return true;
   }
 
   function skipUntil(condition: string) {
-    while (input.peek(condition.length) !== condition) {
+    while (!input.eof() && input.peek(condition.length) !== condition) {
       input.next();
     }
-    input.next();
   }
 
   function parseNumber(negative: boolean = false): number {
@@ -147,7 +150,7 @@ function parse(file: string): any {
   function parseArray(): Array<any> {
     skip('[');
     let arr: Array<any> = [];
-    while (input.peek() !== ']') {
+    while (!input.eof() && input.peek() !== ']') {
       skipWhitespacesAndComments();
       maybeSkip(',');
       skipWhitespaces();
@@ -163,7 +166,7 @@ function parse(file: string): any {
   function parseObject(): Record<string, any> {
     skip('{');
     let obj: Record<string, any> = {};
-    while (input.peek() !== '}') {
+    while (!input.eof() && input.peek() !== '}') {
       skipWhitespacesAndComments();
       maybeSkip(',');
       skipWhitespaces();
@@ -179,12 +182,16 @@ function parse(file: string): any {
     return obj;
   }
 
-  function parseKey(): string {
+  function parseKey(): string | number {
     const next = input.peek();
     if (next === SINGLE_QUOTE || next === DOUBLE_QUOTE) {
       return parseString(next);
     }
+    if (isDigit(input.peek())) {
+      return parseNumber();
+    }
     if (input.peek() === '[') {
+      skip('[');
       const expr = parseExpression();
       skip(']');
       return expr;
@@ -203,16 +210,21 @@ function parse(file: string): any {
     return str;
   }
 
-  function parseString(char: "'" | '"'): string {
+  function parseString(end: "'" | '"' | '`'): string {
     let escaped = false;
     let str = '';
     input.next();
     while (!input.eof()) {
       const ch = input.next();
-      if (!escaped && ch === char) {
+      if (end !== BACKTICK && ch === '\n') {
         break;
       }
-      if (ch === '\\') {
+      if (escaped) {
+        str += ch;
+        escaped = false;
+      } else if (ch === end) {
+        break;
+      } else if (ch === '\\') {
         escaped = true;
       } else {
         str += ch;
@@ -231,7 +243,7 @@ function parse(file: string): any {
 
   function skip(char: string) {
     if (input.peek() !== char) {
-      input.croak(`Expected ${char}`);
+      input.croak(`Expected ${char} got ${input.peek()}`);
     }
     input.next();
   }
