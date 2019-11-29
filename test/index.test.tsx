@@ -57,6 +57,14 @@ test('throw when more than one expression', () => {
   expect(() => Parser.parse('{}a')).toThrow();
 });
 
+test('parse trailing commas', () => {
+  expect(Parser.parse('{ foo: true, }')).toEqual({ foo: true });
+});
+
+test('parse trailing commas in array', () => {
+  expect(Parser.parse('[true, false, ]')).toEqual([true, false]);
+});
+
 test('throw on invalid key', () => {
   expect(() => Parser.parse('{ -45: 55 }')).toThrow();
 });

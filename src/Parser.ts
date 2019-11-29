@@ -155,6 +155,9 @@ function parse(file: string): any {
       skipWhitespacesAndComments();
       maybeSkip(',');
       skipWhitespaces();
+      if (!input.eof() && input.peek() === ']') {
+        break;
+      }
       const value = parseExpression();
       skipWhitespaces();
       arr.push(value);
@@ -170,6 +173,10 @@ function parse(file: string): any {
     while (!input.eof() && input.peek() !== '}') {
       skipWhitespacesAndComments();
       maybeSkip(',');
+      skipWhitespacesAndComments();
+      if (!input.eof() && input.peek() === '}') {
+        break;
+      }
       skipWhitespaces();
       const key = parseKey();
       skip(':');
@@ -178,8 +185,6 @@ function parse(file: string): any {
       skipWhitespaces();
       obj[key] = value;
     }
-    skipWhitespacesAndComments();
-    maybeSkip(',');
     skipWhitespacesAndComments();
     skip('}');
     return obj;
