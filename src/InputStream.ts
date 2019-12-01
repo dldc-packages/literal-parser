@@ -1,6 +1,7 @@
 export interface InputStream {
   next(count?: number): string;
   peek(length?: number): string;
+  position(): number;
   eof(): boolean;
   croak(msg: string): never;
 }
@@ -15,6 +16,7 @@ export function InputStream(input: string): InputStream {
     peek,
     eof,
     croak,
+    position: () => pos,
   };
 
   function next(count: number = 1): string {

@@ -1,26 +1,44 @@
 import { InputStream } from './InputStream';
+import { BACKTICK, DOUBLE_QUOTE, SINGLE_QUOTE } from './constants';
 
 export const Parser = {
   parse,
+  parseOne,
 };
 
-const SINGLE_QUOTE = "'";
-const DOUBLE_QUOTE = '"';
-const BACKTICK = '`';
+interface ParseOneResult {
+  length: number;
+  value: any;
+}
+
+function parseOne(file: string): ParseOneResult {
+  const input = InputStream(file);
+  const res = parseInternal(input);
+  return {
+    value: res,
+    length: input.position(),
+  };
+}
 
 function parse(file: string): any {
   const input = InputStream(file);
 
+  const res = parseInternal(input);
+
+  if (input.eof()) {
+    return res;
+  }
+  input.croak(`Expected EOF`);
+}
+
+function parseInternal(input: InputStream): any {
   return root();
 
   function root() {
     skipWhitespacesAndComments();
     const expr = parseExpression();
     skipWhitespacesAndComments();
-    if (input.eof()) {
-      return expr;
-    }
-    input.croak(`Expected EOF`);
+    return expr;
   }
 
   function parseExpression(): any {
@@ -192,11 +210,12 @@ function parse(file: string): any {
 
   function parseKey(): string | number {
     const next = input.peek();
+    if (isDigit(input.peek())) {
+      const res = parseNumber();
+      return res;
+    }
     if (next === SINGLE_QUOTE || next === DOUBLE_QUOTE) {
       return parseString(next);
-    }
-    if (isDigit(input.peek())) {
-      return parseNumber();
     }
     if (input.peek() === '[') {
       skip('[');

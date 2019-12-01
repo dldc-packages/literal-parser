@@ -1,4 +1,4 @@
-import Parser from '../src';
+import { Parser, Serializer } from '../src';
 
 describe('parse all sort of shape', () => {
   const SHAPES: Array<[string, any]> = [
@@ -33,6 +33,40 @@ describe('parse all sort of shape', () => {
   SHAPES.forEach(([str, res]) => {
     test(`Parse ${str}`, () => {
       expect(Parser.parse(str)).toEqual(res);
+    });
+  });
+});
+
+describe('parse then serialize should return the same', () => {
+  const SHAPES: Array<string> = [
+    '{}',
+    `'foo'`,
+    `'john\\'s'`,
+    '{ foo: {} }',
+    `{ 'foo-bar': {} }`,
+    '{ foo: {}, bar: {} }',
+    '{ foo: { bar: { baz: {} } } }',
+    '{ foo: 45 }',
+    '{ foo: 45.566 }',
+    '{ foo: -45.566 }',
+    '{ foo: -0.566 }',
+    `{ foo: 'bar' }`,
+    `{ 45: 'bar' }`,
+    `[0, 1, 5]`,
+    `1234`,
+    `12.34`,
+    `true`,
+    `false`,
+    `{ foo: true }`,
+    `{ foo: false }`,
+    `{ foo: 'l\\'orage' }`,
+    `null`,
+    `undefined`,
+  ];
+
+  SHAPES.forEach(str => {
+    test(`Parse the serialize ${str}`, () => {
+      expect(Serializer.serialize(Parser.parse(str))).toEqual(str);
     });
   });
 });
