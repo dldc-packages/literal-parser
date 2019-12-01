@@ -75,6 +75,9 @@ function parseInternal(input: InputStream): any {
       skipIdentifier('undefined');
       return undefined;
     }
+    if (input.eof()) {
+      return input.croak(`Unexpected empty string`);
+    }
     return input.croak(`Unexpected "${ch}"`);
   }
 

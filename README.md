@@ -20,3 +20,26 @@ Parser.parse('{ some: ["object", { literal: true }] }');
 ## Supported features
 
 Take a look at the test folder see what is supported.
+
+## API
+
+### `Parser.parse(str)`
+
+Parse the string, expect the string to contain only one expression and throw otherwise.
+
+Return the parsed object.
+
+### `Parser.parseOne(str)`
+
+Parse one expression then stop.
+
+Returns a object with `{ value, length }` where `value` is the parsed expression and `length` is the number of character parsed.
+
+```js
+Parser.parseOne('{ props: true }} something="else" />');
+// { value: { props: true }, length: 15 }
+```
+
+### `Serializer.serialize(obj)`
+
+Print an object.

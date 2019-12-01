@@ -36,3 +36,17 @@ describe('parseOne get correct length', () => {
     });
   });
 });
+
+describe('parseOne ignore stuff after', () => {
+  const SHAPES: Array<[string, any]> = [
+    [`{ foo: 'l\\'orage' }{}`, { foo: "l'orage" }],
+    [`null}some other stuff`, null],
+    [`undefined}yoloooo`, undefined],
+  ];
+
+  SHAPES.forEach(([str, res]) => {
+    test(str, () => {
+      expect(Parser.parseOne(str).value).toEqual(res);
+    });
+  });
+});

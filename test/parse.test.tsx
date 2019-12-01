@@ -88,7 +88,11 @@ test('parse complex object', () => {
 });
 
 test('throw when more than one expression', () => {
-  expect(() => Parser.parse('{}a')).toThrow();
+  expect(() => Parser.parse('{}{}')).toThrow();
+});
+
+test('throw when empty', () => {
+  expect(() => Parser.parse('')).toThrow('Unexpected empty string');
 });
 
 test('parse trailing commas', () => {
