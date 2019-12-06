@@ -57,15 +57,16 @@ function serialize(obj: any): string {
   }
 
   function serializeString(obj: string) {
-    const hasSingle = obj.indexOf(SINGLE_QUOTE);
+    const hasSingle = obj.indexOf(SINGLE_QUOTE) >= 0;
+    // remove quote char
     if (!hasSingle) {
       return `'${obj}'`;
     }
-    const hasDouble = obj.indexOf(DOUBLE_QUOTE);
+    const hasDouble = obj.indexOf(DOUBLE_QUOTE) >= 0;
     if (!hasDouble) {
       return `"${obj}"`;
     }
-    const hasBacktick = obj.indexOf(BACKTICK);
+    const hasBacktick = obj.indexOf(BACKTICK) >= 0;
     if (!hasBacktick) {
       return '`' + obj + '`';
     }

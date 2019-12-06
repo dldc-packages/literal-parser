@@ -41,7 +41,7 @@ describe('parse then serialize should return the same', () => {
   const SHAPES: Array<string> = [
     '{}',
     `'foo'`,
-    `'john\\'s'`,
+    `"john's"`,
     '{ foo: {} }',
     `{ 'foo-bar': {} }`,
     '{ foo: {}, bar: {} }',
@@ -59,7 +59,7 @@ describe('parse then serialize should return the same', () => {
     `false`,
     `{ foo: true }`,
     `{ foo: false }`,
-    `{ foo: 'l\\'orage' }`,
+    `{ foo: "l'orage" }`,
     `null`,
     `undefined`,
   ];
@@ -113,6 +113,10 @@ test('throw when invalid', () => {
 
 test('string does not support multiline', () => {
   expect(() => Parser.parse(`'foo\nbar'`)).toThrow();
+});
+
+test('parse empty string', () => {
+  expect(Parser.parse('""')).toEqual('');
 });
 
 describe('comments', () => {
