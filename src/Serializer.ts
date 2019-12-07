@@ -5,6 +5,12 @@ export const Serializer = {
 };
 
 function serialize(obj: any): string {
+  try {
+    JSON.stringify(obj);
+  } catch (error) {
+    throw new Error(`Value not compatible with JSON.stringify`);
+  }
+
   return root();
 
   function root() {
