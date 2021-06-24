@@ -19,11 +19,11 @@ export function InputStream(input: string): InputStream {
     position: () => pos,
   };
 
-  function next(count: number = 1): string {
-    let val = '';
+  function next(count = 1): string {
+    let val = "";
     for (let i = 0; i < count; i++) {
       const ch = input.charAt(pos++);
-      if (ch === '\n') {
+      if (ch === "\n") {
         line++;
         col = 0;
       } else {
@@ -34,11 +34,11 @@ export function InputStream(input: string): InputStream {
     return val;
   }
 
-  function peek(length: number = 1): string {
+  function peek(length = 1): string {
     if (length === 1) {
       return input.charAt(pos);
     }
-    let val: string = '';
+    let val = "";
     for (let i = 0; i < length; i++) {
       val += input.charAt(pos + i);
     }
@@ -46,10 +46,10 @@ export function InputStream(input: string): InputStream {
   }
 
   function eof(): boolean {
-    return peek() === '';
+    return peek() === "";
   }
 
   function croak(msg: string): never {
-    throw new Error(msg + ' (' + line + ':' + col + ')');
+    throw new Error(msg + " (" + line + ":" + col + ")");
   }
 }
