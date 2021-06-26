@@ -22,11 +22,10 @@
   ],
   "scripts": {
     "build": "rimraf dist && tsc -p ./tsconfig.build.json",
-    "example:run": "vite example",
-    "lint": "tsc --noEmit && prettier --check src && eslint src",
-    "lint:fix": "prettier --write src && eslint --fix src",
+    "lint": "tsc --noEmit && prettier --check src tests && eslint src tests",
+    "lint:fix": "prettier --write src tests && eslint --fix src tests",
     "release": "yarn build && np",
-    "test": "yarn lint && c8 --reporter=html --reporter=text jest",
+    "test": "yarn lint && jest --coverage",
     "test:run": "jest",
     "test:watch": "jest --watch"
   },
@@ -37,7 +36,6 @@
     "@types/jest": "^26.0.23",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
-    "c8": "^7.7.3",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "jest": "^27.0.5",

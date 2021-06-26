@@ -1,5 +1,5 @@
-import { Parser } from "../Parser.js";
-import { Serializer } from "../Serializer.js";
+import { Parser } from "../src/Parser.js";
+import { Serializer } from "../src/Serializer.js";
 
 describe("parse all sort of shape", () => {
   const SHAPES: Array<[string, any]> = [

@@ -1,4 +1,4 @@
-import { Parser } from "../Parser";
+import { Parser } from "../src/Parser.js";
 
 describe("parseOne get correct length", () => {
   const SHAPES: Array<[string, number]> = [

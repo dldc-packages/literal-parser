@@ -1,4 +1,4 @@
-import { Serializer } from "../Serializer";
+import { Serializer } from "../src/Serializer.js";
 
 test("Handle quote in string when serialize", () => {
   expect(() => Serializer.serialize('"')).not.toThrow();
