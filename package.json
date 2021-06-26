@@ -22,8 +22,8 @@
   ],
   "scripts": {
     "build": "rimraf dist && tsc -p ./tsconfig.build.json",
-    "lint": "tsc --noEmit && prettier --check src tests && eslint src tests",
-    "lint:fix": "prettier --write src tests && eslint --fix src tests",
+    "lint": "prettier --check . && eslint && tsc --noEmit",
+    "lint:fix": "prettier --write . && eslint --fix",
     "release": "yarn build && np",
     "test": "yarn lint && jest --coverage",
     "test:run": "jest",
