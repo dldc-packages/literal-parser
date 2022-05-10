@@ -1,6 +1,6 @@
-import { Serializer } from "../src/Serializer.js";
+import { Serializer } from '../src/Serializer';
 
-test("Handle quote in string when serialize", () => {
+test('Handle quote in string when serialize', () => {
   expect(() => Serializer.serialize('"')).not.toThrow();
   expect(() => Serializer.serialize("'")).not.toThrow();
 
@@ -8,18 +8,18 @@ test("Handle quote in string when serialize", () => {
   expect(Serializer.serialize("'")).toEqual(`"'"`);
 });
 
-test("Handle escaped quote in string", () => {
+test('Handle escaped quote in string', () => {
   // prettier-ignore
   expect(() => Serializer.serialize("\"")).not.toThrow();
   // prettier-ignore
   expect(Serializer.serialize("\"")).toEqual(`'"'`);
 });
 
-test("Handle recursive object", () => {
+test('Handle recursive object', () => {
   const a: any = {};
   const b: any = {};
   a.b = b;
   b.a = a;
 
-  expect(() => Serializer.serialize(a)).toThrow("Value not compatible with JSON.stringify");
+  expect(() => Serializer.serialize(a)).toThrow('Value not compatible with JSON.stringify');
 });

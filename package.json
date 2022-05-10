@@ -13,38 +13,44 @@
   },
   "license": "MIT",
   "author": "Etienne Dldc",
-  "type": "module",
-  "exports": "./dist/index.js",
-  "module": "dist/index.js",
-  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./dist/mod.mjs",
+      "require": "./dist/mod.js"
+    }
+  },
+  "main": "./dist/mod.js",
+  "module": "./dist/mod.mjs",
+  "types": "./dist/mod.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rimraf dist && tsc -p ./tsconfig.build.json",
-    "lint": "prettier --check . && eslint && tsc --noEmit",
-    "lint:fix": "prettier --write . && eslint --fix",
+    "build": "rimraf dist deno_dist && tsup --format cjs,esm src/mod.ts --dts src/mod.ts && denoify",
+    "lint": "prettier . --check && eslint . && tsc --noEmit",
+    "lint:fix": "prettier . --write . && eslint . --fix",
     "release": "yarn build && np",
     "test": "yarn lint && jest --coverage",
     "test:run": "jest",
-    "test:watch": "jest --watch"
-  },
-  "dependencies": {
-    "tslib": "^2.3.0"
+    "test:watch": "jest --watch",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
-    "@typescript-eslint/eslint-plugin": "^4.28.0",
-    "@typescript-eslint/parser": "^4.28.0",
-    "eslint": "^7.29.0",
-    "eslint-config-prettier": "^8.3.0",
-    "jest": "^27.0.5",
-    "jest-ts-tsx-resolver": "^1.0.0",
-    "np": "^7.5.0",
-    "prettier": "^2.3.1",
+    "@types/jest": "^27.5.0",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
+    "denoify": "^0.11.0",
+    "eslint": "^8.15.0",
+    "eslint-config-prettier": "^8.5.0",
+    "jest": "^28.1.0",
+    "np": "^7.6.1",
+    "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
-    "ts-jest": "^27.0.3",
-    "typescript": "^4.3.4"
+    "ts-jest": "^28.0.2",
+    "tslib": "^2.4.0",
+    "tsup": "^5.12.7",
+    "typescript": "^4.6.4"
   },
   "publishConfig": {
     "access": "public",

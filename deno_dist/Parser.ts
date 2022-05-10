@@ -1,5 +1,5 @@
-import { InputStream } from './InputStream';
-import { BACKTICK, DOUBLE_QUOTE, SINGLE_QUOTE } from './constants';
+import { InputStream } from "./InputStream.ts";
+import { BACKTICK, DOUBLE_QUOTE, SINGLE_QUOTE } from "./constants.ts";
 
 export const Parser = {
   parse,
@@ -43,13 +43,13 @@ function parseInternal(input: InputStream): any {
 
   function parseExpression(): any {
     const ch = input.peek();
-    if (ch === '{') {
+    if (ch === "{") {
       return parseObject();
     }
-    if (ch === '[') {
+    if (ch === "[") {
       return parseArray();
     }
-    if (ch === '-') {
+    if (ch === "-") {
       input.next();
       return parseNumber(true);
     }
@@ -59,20 +59,20 @@ function parseInternal(input: InputStream): any {
     if (isDigit(ch)) {
       return parseNumber();
     }
-    if (isIdentifier('true')) {
-      skipIdentifier('true');
+    if (isIdentifier("true")) {
+      skipIdentifier("true");
       return true;
     }
-    if (isIdentifier('false')) {
-      skipIdentifier('false');
+    if (isIdentifier("false")) {
+      skipIdentifier("false");
       return false;
     }
-    if (isIdentifier('null')) {
-      skipIdentifier('null');
+    if (isIdentifier("null")) {
+      skipIdentifier("null");
       return null;
     }
-    if (isIdentifier('undefined')) {
-      skipIdentifier('undefined');
+    if (isIdentifier("undefined")) {
+      skipIdentifier("undefined");
       return undefined;
     }
     if (input.eof()) {
@@ -106,7 +106,7 @@ function parseInternal(input: InputStream): any {
   }
 
   function isNameChar(ch: string): boolean {
-    return isNameStart(ch) || '0123456789_'.indexOf(ch) >= 0;
+    return isNameStart(ch) || "0123456789_".indexOf(ch) >= 0;
   }
 
   function skipWhitespacesAndComments() {
@@ -117,16 +117,16 @@ function parseInternal(input: InputStream): any {
   }
 
   function skipComment(): boolean {
-    if (input.peek(2) === '//') {
+    if (input.peek(2) === "//") {
       input.next();
       input.next();
-      skipUntil('\n');
+      skipUntil("\n");
       return true;
     }
-    if (input.peek(2) === '/*') {
+    if (input.peek(2) === "/*") {
       input.next();
       input.next();
-      skipUntil('*/');
+      skipUntil("*/");
       input.next();
       input.next();
       return true;
@@ -135,7 +135,7 @@ function parseInternal(input: InputStream): any {
   }
 
   function isWhitspace(char: string): boolean {
-    return char === ' ' || char === '\t' || char === '\n';
+    return char === " " || char === "\t" || char === "\n";
   }
 
   function skipWhitespaces(): boolean {
@@ -157,7 +157,7 @@ function parseInternal(input: InputStream): any {
   function parseNumber(negative = false): number {
     let hasDot = false;
     const number = readWhile((ch) => {
-      if (ch === '.') {
+      if (ch === ".") {
         if (hasDot) {
           return false;
         }
@@ -170,13 +170,13 @@ function parseInternal(input: InputStream): any {
   }
 
   function parseArray(): Array<any> {
-    skip('[');
+    skip("[");
     const arr: Array<any> = [];
-    while (!input.eof() && input.peek() !== ']') {
+    while (!input.eof() && input.peek() !== "]") {
       skipWhitespacesAndComments();
-      maybeSkip(',');
+      maybeSkip(",");
       skipWhitespaces();
-      if (!input.eof() && input.peek() === ']') {
+      if (!input.eof() && input.peek() === "]") {
         break;
       }
       const value = parseExpression();
@@ -184,30 +184,30 @@ function parseInternal(input: InputStream): any {
       arr.push(value);
     }
     skipWhitespacesAndComments();
-    skip(']');
+    skip("]");
     return arr;
   }
 
   function parseObject(): Record<string, any> {
-    skip('{');
+    skip("{");
     const obj: Record<string, any> = {};
-    while (!input.eof() && input.peek() !== '}') {
+    while (!input.eof() && input.peek() !== "}") {
       skipWhitespacesAndComments();
-      maybeSkip(',');
+      maybeSkip(",");
       skipWhitespacesAndComments();
-      if (!input.eof() && input.peek() === '}') {
+      if (!input.eof() && input.peek() === "}") {
         break;
       }
       skipWhitespaces();
       const key = parseKey();
-      skip(':');
+      skip(":");
       skipWhitespaces();
       const value = parseExpression();
       skipWhitespaces();
       obj[key] = value;
     }
     skipWhitespacesAndComments();
-    skip('}');
+    skip("}");
     return obj;
   }
 
@@ -220,10 +220,10 @@ function parseInternal(input: InputStream): any {
     if (next === SINGLE_QUOTE || next === DOUBLE_QUOTE) {
       return parseString(next);
     }
-    if (input.peek() === '[') {
-      skip('[');
+    if (input.peek() === "[") {
+      skip("[");
       const expr = parseExpression();
-      skip(']');
+      skip("]");
       return expr;
     }
     if (isNameStart(input.peek())) {
@@ -233,20 +233,20 @@ function parseInternal(input: InputStream): any {
   }
 
   function readWhile(predicate: (ch: string) => boolean): string {
-    let str = '';
+    let str = "";
     while (!input.eof() && predicate(input.peek())) {
       str += input.next();
     }
     return str;
   }
 
-  function parseString(end: "'" | '"' | '`'): string {
+  function parseString(end: "'" | '"' | "`"): string {
     let escaped = false;
-    let str = '';
+    let str = "";
     input.next();
     while (!input.eof()) {
       const ch = input.next();
-      if (end !== BACKTICK && ch === '\n') {
+      if (end !== BACKTICK && ch === "\n") {
         break;
       }
       if (escaped) {
@@ -254,7 +254,7 @@ function parseInternal(input: InputStream): any {
         escaped = false;
       } else if (ch === end) {
         break;
-      } else if (ch === '\\') {
+      } else if (ch === "\\") {
         escaped = true;
       } else {
         str += ch;

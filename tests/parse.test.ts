@@ -1,24 +1,24 @@
-import { Parser } from "../src/Parser.js";
-import { Serializer } from "../src/Serializer.js";
+import { Parser } from '../src/Parser';
+import { Serializer } from '../src/Serializer';
 
-describe("parse all sort of shape", () => {
+describe('parse all sort of shape', () => {
   const SHAPES: Array<[string, any]> = [
-    ["{}", {}],
-    [`'foo'`, "foo"],
+    ['{}', {}],
+    [`'foo'`, 'foo'],
     [`'john\\'s'`, "john's"],
-    ["{ foo: {} }", { foo: {} }],
-    ['{ "foo-bar": {} }', { "foo-bar": {} }],
-    [`{ 'foo-bar': {} }`, { "foo-bar": {} }],
-    ["{ foo: {}, bar: {} }", { foo: {}, bar: {} }],
-    ["{ foo: { bar: { baz: {} } } }", { foo: { bar: { baz: {} } } }],
-    ["{ foo: 45 }", { foo: 45 }],
-    ["{ foo: 45.566 }", { foo: 45.566 }],
-    ["{ foo: -45.566 }", { foo: -45.566 }],
-    ["{ foo: -.566 }", { foo: -0.566 }],
-    ['{ foo: "bar" }', { foo: "bar" }],
-    [`{ foo: 'bar' }`, { foo: "bar" }],
-    [`{ ['foo']: 'bar' }`, { foo: "bar" }],
-    [`{ 45: 'bar' }`, { 45: "bar" }],
+    ['{ foo: {} }', { foo: {} }],
+    ['{ "foo-bar": {} }', { 'foo-bar': {} }],
+    [`{ 'foo-bar': {} }`, { 'foo-bar': {} }],
+    ['{ foo: {}, bar: {} }', { foo: {}, bar: {} }],
+    ['{ foo: { bar: { baz: {} } } }', { foo: { bar: { baz: {} } } }],
+    ['{ foo: 45 }', { foo: 45 }],
+    ['{ foo: 45.566 }', { foo: 45.566 }],
+    ['{ foo: -45.566 }', { foo: -45.566 }],
+    ['{ foo: -.566 }', { foo: -0.566 }],
+    ['{ foo: "bar" }', { foo: 'bar' }],
+    [`{ foo: 'bar' }`, { foo: 'bar' }],
+    [`{ ['foo']: 'bar' }`, { foo: 'bar' }],
+    [`{ 45: 'bar' }`, { 45: 'bar' }],
     [`[0, 1, 5]`, [0, 1, 5]],
     [`1234`, 1234],
     [`12.34`, 12.34],
@@ -38,19 +38,19 @@ describe("parse all sort of shape", () => {
   });
 });
 
-describe("parse then serialize should return the same", () => {
+describe('parse then serialize should return the same', () => {
   const SHAPES: Array<string> = [
-    "{}",
+    '{}',
     `'foo'`,
     `"john's"`,
-    "{ foo: {} }",
+    '{ foo: {} }',
     `{ 'foo-bar': {} }`,
-    "{ foo: {}, bar: {} }",
-    "{ foo: { bar: { baz: {} } } }",
-    "{ foo: 45 }",
-    "{ foo: 45.566 }",
-    "{ foo: -45.566 }",
-    "{ foo: -0.566 }",
+    '{ foo: {}, bar: {} }',
+    '{ foo: { bar: { baz: {} } } }',
+    '{ foo: 45 }',
+    '{ foo: 45.566 }',
+    '{ foo: -45.566 }',
+    '{ foo: -0.566 }',
     `{ foo: 'bar' }`,
     `{ 45: 'bar' }`,
     `[0, 1, 5]`,
@@ -72,7 +72,7 @@ describe("parse then serialize should return the same", () => {
   });
 });
 
-test("parse complex object", () => {
+test('parse complex object', () => {
   expect(
     Parser.parse(`{
       type: 'Root',
@@ -81,55 +81,55 @@ test("parse complex object", () => {
       slides: []
     }`)
   ).toEqual({
-    type: "Root",
+    type: 'Root',
     version: 1,
     course: [],
     slides: [],
   });
 });
 
-test("throw when more than one expression", () => {
-  expect(() => Parser.parse("{}{}")).toThrow();
+test('throw when more than one expression', () => {
+  expect(() => Parser.parse('{}{}')).toThrow();
 });
 
-test("throw when empty", () => {
-  expect(() => Parser.parse("")).toThrow("Unexpected empty string");
+test('throw when empty', () => {
+  expect(() => Parser.parse('')).toThrow('Unexpected empty string');
 });
 
-test("parse trailing commas", () => {
-  expect(Parser.parse("{ foo: true, }")).toEqual({ foo: true });
+test('parse trailing commas', () => {
+  expect(Parser.parse('{ foo: true, }')).toEqual({ foo: true });
 });
 
-test("parse trailing commas in array", () => {
-  expect(Parser.parse("[true, false, ]")).toEqual([true, false]);
+test('parse trailing commas in array', () => {
+  expect(Parser.parse('[true, false, ]')).toEqual([true, false]);
 });
 
-test("throw on invalid key", () => {
-  expect(() => Parser.parse("{ -45: 55 }")).toThrow();
+test('throw on invalid key', () => {
+  expect(() => Parser.parse('{ -45: 55 }')).toThrow();
 });
 
-test("throw when invalid", () => {
-  expect(() => Parser.parse("!")).toThrow();
+test('throw when invalid', () => {
+  expect(() => Parser.parse('!')).toThrow();
 });
 
-test("string does not support multiline", () => {
+test('string does not support multiline', () => {
   expect(() => Parser.parse(`'foo\nbar'`)).toThrow();
 });
 
-test("parse empty string", () => {
-  expect(Parser.parse('""')).toEqual("");
+test('parse empty string', () => {
+  expect(Parser.parse('""')).toEqual('');
 });
 
-describe("comments", () => {
-  test("line comment", () => {
-    expect(Parser.parse("{}// test 2 {}")).toEqual({});
+describe('comments', () => {
+  test('line comment', () => {
+    expect(Parser.parse('{}// test 2 {}')).toEqual({});
   });
 
-  test("inside comments", () => {
-    expect(Parser.parse("/* test */{}/* test 2 */")).toEqual({});
+  test('inside comments', () => {
+    expect(Parser.parse('/* test */{}/* test 2 */')).toEqual({});
   });
 
-  test("multi-line comments", () => {
-    expect(Parser.parse("/* \n */{}/* test 2 */")).toEqual({});
+  test('multi-line comments', () => {
+    expect(Parser.parse('/* \n */{}/* test 2 */')).toEqual({});
   });
 });

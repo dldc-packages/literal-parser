@@ -18,8 +18,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
-    "esModuleInterop": true,
-    "jsx": "react"
+    "esModuleInterop": true
   },
   "include": ["src", "tests"]
 }

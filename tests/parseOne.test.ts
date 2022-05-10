@@ -1,19 +1,19 @@
-import { Parser } from "../src/Parser.js";
+import { Parser } from '../src/Parser';
 
-describe("parseOne get correct length", () => {
+describe('parseOne get correct length', () => {
   const SHAPES: Array<[string, number]> = [
-    ["{}", 2],
+    ['{}', 2],
     [`'foo'`, 5],
     [`'john\\'s'`, 9],
-    ["{ foo: {} }", 11],
+    ['{ foo: {} }', 11],
     ['{ "foo-bar": {} }', 17],
     [`{ 'foo-bar': {} }`, 17],
-    ["{ foo: {}, bar: {} }", 20],
-    ["{ foo: { bar: { baz: {} } } }", 29],
-    ["{ foo: 45 }", 11],
-    ["{ foo: 45.566 }", 15],
-    ["{ foo: -45.566 }", 16],
-    ["{ foo: -.566 }", 14],
+    ['{ foo: {}, bar: {} }', 20],
+    ['{ foo: { bar: { baz: {} } } }', 29],
+    ['{ foo: 45 }', 11],
+    ['{ foo: 45.566 }', 15],
+    ['{ foo: -45.566 }', 16],
+    ['{ foo: -.566 }', 14],
     ['{ foo: "bar" }', 14],
     [`{ foo: 'bar' }`, 14],
     [`{ ['foo']: 'bar' }`, 18],
@@ -37,7 +37,7 @@ describe("parseOne get correct length", () => {
   });
 });
 
-describe("parseOne ignore stuff after", () => {
+describe('parseOne ignore stuff after', () => {
   const SHAPES: Array<[string, any]> = [
     [`{ foo: 'l\\'orage' }{}`, { foo: "l'orage" }],
     [`null}some other stuff`, null],
