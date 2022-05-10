@@ -11,7 +11,7 @@ This is like a `JSON.parse` / `JSON.serialize` but for JavaScript object instead
 ## Gist
 
 ```js
-import Parser from "literal-parser";
+import Parser from 'literal-parser';
 
 Parser.parse('{ some: ["object", { literal: true }] }');
 // return an object { some: ["object", { literal: true }] }

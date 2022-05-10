@@ -1,4 +1,4 @@
-import { BACKTICK, DOUBLE_QUOTE, SINGLE_QUOTE } from "./constants.ts";
+import { BACKTICK, DOUBLE_QUOTE, SINGLE_QUOTE } from './constants.ts';
 
 export const Serializer = {
   serialize,
@@ -15,27 +15,27 @@ function serialize(obj: unknown): string {
 
   function root() {
     if (obj === null) {
-      return "null";
+      return 'null';
     }
     if (obj === undefined) {
-      return "undefined";
+      return 'undefined';
     }
     if (obj === true) {
-      return "true";
+      return 'true';
     }
     if (obj === false) {
-      return "false";
+      return 'false';
     }
-    if (typeof obj === "string") {
+    if (typeof obj === 'string') {
       return serializeString(obj);
     }
-    if (typeof obj === "number") {
+    if (typeof obj === 'number') {
       if (Number.isFinite(obj)) {
         return obj.toString();
       }
     }
     if (Array.isArray(obj)) {
-      return `[${obj.map((item) => serialize(item)).join(", ")}]`;
+      return `[${obj.map((item) => serialize(item)).join(', ')}]`;
     }
     if (isPlainObject(obj)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,11 +50,11 @@ function serialize(obj: unknown): string {
     if (keys.length === 0) {
       return `{}`;
     }
-    return `{ ${keys.map((key) => `${serializeKey(key)}: ${serialize(obj[key])}`).join(", ")} }`;
+    return `{ ${keys.map((key) => `${serializeKey(key)}: ${serialize(obj[key])}`).join(', ')} }`;
   }
 
   function serializeKey(key: string | number): string {
-    if (typeof key === "number") {
+    if (typeof key === 'number') {
       return key.toString();
     }
     if (key.match(/^[A-Za-z0-9][A-Za-z0-9_]+$/)) {
@@ -75,18 +75,18 @@ function serialize(obj: unknown): string {
     }
     const hasBacktick = obj.indexOf(BACKTICK) >= 0;
     if (!hasBacktick) {
-      return "`" + obj + "`";
+      return '`' + obj + '`';
     }
     return `'${obj.replace(/'/g, `\\'`)}'`;
   }
 }
 
 function isObject(val: any): boolean {
-  return val != null && typeof val === "object" && Array.isArray(val) === false;
+  return val != null && typeof val === 'object' && Array.isArray(val) === false;
 }
 
 function isObjectObject(o: any) {
-  return isObject(o) === true && Object.prototype.toString.call(o) === "[object Object]";
+  return isObject(o) === true && Object.prototype.toString.call(o) === '[object Object]';
 }
 
 function isPlainObject(o: any): boolean {
@@ -94,7 +94,7 @@ function isPlainObject(o: any): boolean {
 
   // If has modified constructor
   const ctor = o.constructor;
-  if (typeof ctor !== "function") return false;
+  if (typeof ctor !== 'function') return false;
 
   // If has modified prototype
   const prot = ctor.prototype;
@@ -102,7 +102,7 @@ function isPlainObject(o: any): boolean {
 
   // If constructor does not have an Object-specific method
   // eslint-disable-next-line no-prototype-builtins
-  if (prot.hasOwnProperty("isPrototypeOf") === false) {
+  if (prot.hasOwnProperty('isPrototypeOf') === false) {
     return false;
   }
 
