@@ -172,18 +172,22 @@ function parseInternal(input: InputStream): any {
   function parseArray(): Array<any> {
     skip('[');
     const arr: Array<any> = [];
+    skipWhitespacesAndComments();
+    if (input.peek() === ']') {
+      skip(']');
+      return arr;
+    }
     while (!input.eof() && input.peek() !== ']') {
+      const value = parseExpression();
       skipWhitespacesAndComments();
-      maybeSkip(',');
-      skipWhitespaces();
-      if (!input.eof() && input.peek() === ']') {
+      arr.push(value);
+
+      const foundComma = maybeSkip(',');
+      if (!foundComma) {
         break;
       }
-      const value = parseExpression();
-      skipWhitespaces();
-      arr.push(value);
+      skipWhitespacesAndComments();
     }
-    skipWhitespacesAndComments();
     skip(']');
     return arr;
   }
@@ -191,22 +195,24 @@ function parseInternal(input: InputStream): any {
   function parseObject(): Record<string, any> {
     skip('{');
     const obj: Record<string, any> = {};
+    skipWhitespacesAndComments();
+    if (input.peek() === '}') {
+      skip('}');
+      return obj;
+    }
     while (!input.eof() && input.peek() !== '}') {
-      skipWhitespacesAndComments();
-      maybeSkip(',');
-      skipWhitespacesAndComments();
-      if (!input.eof() && input.peek() === '}') {
-        break;
-      }
-      skipWhitespaces();
       const key = parseKey();
       skip(':');
-      skipWhitespaces();
+      skipWhitespacesAndComments();
       const value = parseExpression();
-      skipWhitespaces();
+      skipWhitespacesAndComments();
       obj[key] = value;
+      const foundComma = maybeSkip(',');
+      if (!foundComma) {
+        break;
+      }
+      skipWhitespacesAndComments();
     }
-    skipWhitespacesAndComments();
     skip('}');
     return obj;
   }
@@ -278,9 +284,11 @@ function parseInternal(input: InputStream): any {
     input.next();
   }
 
-  function maybeSkip(char: string) {
+  function maybeSkip(char: string): boolean {
     if (input.peek() === char) {
       input.next();
+      return true;
     }
+    return false;
   }
 }

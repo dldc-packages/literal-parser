@@ -66,7 +66,7 @@ describe('parse then serialize should return the same', () => {
   ];
 
   SHAPES.forEach((str) => {
-    test(`Parse the serialize ${str}`, () => {
+    test(`Parse then serialize ${str}`, () => {
       expect(Serializer.serialize(Parser.parse(str))).toEqual(str);
     });
   });
@@ -98,6 +98,11 @@ test('throw when empty', () => {
 
 test('parse trailing commas', () => {
   expect(Parser.parse('{ foo: true, }')).toEqual({ foo: true });
+});
+
+test('fail when missing commas', () => {
+  expect(() => Parser.parse('{ foo: true bar: false }')).toThrow();
+  expect(() => Parser.parse('[0 1 2]')).toThrow();
 });
 
 test('parse trailing commas in array', () => {
