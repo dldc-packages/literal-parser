@@ -88,6 +88,18 @@ test('parse complex object', () => {
   });
 });
 
+test('nested array', () => {
+  expect(Parser.parse(`[[], []]`)).toEqual([[], []]);
+});
+
+test('array of objects', () => {
+  expect(Parser.parse(`[{ foo: true }, { bar: false }]`)).toEqual([{ foo: true }, { bar: false }]);
+});
+
+test('nesteeeeeed', () => {
+  expect(Parser.parse(`[[[[[[[[]]]]]]]]`)).toEqual([[[[[[[[]]]]]]]]);
+});
+
 test('throw when more than one expression', () => {
   expect(() => Parser.parse('{}{}')).toThrow();
 });
