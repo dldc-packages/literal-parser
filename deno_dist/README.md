@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/etienne-dldc/literal-parser/blob/master/design/logo.svg" width="700" alt="literal-parser logo">
+  <img src="https://raw.githubusercontent.com/etienne-dldc/literal-parser/main/design/logo.svg" width="700" alt="literal-parser logo">
 </p>
 
 # 🔎 literal-parser
