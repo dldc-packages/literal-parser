@@ -1,6 +1,6 @@
 {
   "name": "literal-parser",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "A small library to parse JavaScript array/object literal",
   "keywords": [],
   "homepage": "https://github.com/etienne-dldc/literal-parser#readme",
