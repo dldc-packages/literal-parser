@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import { Parser } from '../src/Parser';
 import { Serializer } from '../src/Serializer';
 

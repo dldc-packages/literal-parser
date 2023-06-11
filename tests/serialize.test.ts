@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest';
 import { Serializer } from '../src/Serializer';
 
 test('Handle quote in string when serialize', () => {
