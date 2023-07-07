@@ -80,7 +80,7 @@ test('parse complex object', () => {
       version: 1,
       course: [],
       slides: []
-    }`)
+    }`),
   ).toEqual({
     type: 'Root',
     version: 1,
