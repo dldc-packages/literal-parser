@@ -4,53 +4,106 @@ export const Serializer = {
   serialize,
 };
 
-function serialize(obj: unknown): string {
+export type FormatObj =
+  | { mode: 'line' }
+  | { mode: 'compact' }
+  | { mode: 'indent'; space?: number }
+  | { mode: 'pretty'; threshold?: number; space?: number };
+
+export type Format = 'line' | 'compact' | 'pretty' | 'indent' | number | FormatObj;
+
+type PrintItem =
+  | string
+  | { type: 'Line' }
+  | { type: 'IndentObj' }
+  | { type: 'DedentObj' }
+  | { type: 'IndentArr' }
+  | { type: 'DedentArr' }
+  | { type: 'Space' }
+  | { type: 'Group'; items: PrintItems };
+
+type PrintItems = readonly PrintItem[];
+
+function serialize(obj: unknown, format: Format = 'line'): string {
   try {
     JSON.stringify(obj);
   } catch (error) {
     throw new Error(`Value not compatible with JSON.stringify`);
   }
+  const formatObj = resolveFormatObj(format);
 
-  return root();
+  const items = printItems(obj);
+  return formatPrintItems(items, formatObj, 0);
 
-  function root() {
+  function printItems(obj: unknown): PrintItems {
     if (obj === null) {
-      return 'null';
+      return ['null'];
     }
     if (obj === undefined) {
-      return 'undefined';
+      return ['undefined'];
     }
     if (obj === true) {
-      return 'true';
+      return ['true'];
     }
     if (obj === false) {
-      return 'false';
+      return ['false'];
     }
     if (typeof obj === 'string') {
-      return serializeString(obj);
+      return [serializeString(obj)];
     }
     if (typeof obj === 'number') {
       if (Number.isFinite(obj)) {
-        return obj.toString();
+        return [obj.toString()];
       }
     }
     if (Array.isArray(obj)) {
-      return `[${obj.map((item) => serialize(item)).join(', ')}]`;
+      const items: PrintItem[] = [];
+      items.push('[');
+      if (obj.length === 0) {
+        items.push(']');
+        return items;
+      }
+      items.push({ type: 'IndentArr' });
+      obj.forEach((item, index) => {
+        if (index > 0) {
+          items.push(',');
+          items.push({ type: 'Line' });
+        }
+        items.push(...printItems(item));
+      });
+      items.push({ type: 'DedentArr' });
+      items.push(']');
+      return [{ type: 'Group', items }];
     }
     if (isPlainObject(obj)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return serializeObject(obj as any);
+      return objectPrintItems(obj as Record<any, any>);
     }
     console.log(obj);
     throw new Error(`Unsuported type ${typeof obj}`);
   }
 
-  function serializeObject(obj: Record<any, any>) {
+  function objectPrintItems(obj: Record<any, any>): PrintItems {
+    const items: PrintItem[] = [];
+    items.push('{');
     const keys = Object.keys(obj);
     if (keys.length === 0) {
-      return `{}`;
+      items.push('}');
+      return items;
     }
-    return `{ ${keys.map((key) => `${serializeKey(key)}: ${serialize(obj[key])}`).join(', ')} }`;
+    items.push({ type: 'IndentObj' });
+    keys.forEach((key, index) => {
+      if (index > 0) {
+        items.push(',');
+        items.push({ type: 'Line' });
+      }
+      items.push(serializeKey(key));
+      items.push(':');
+      items.push({ type: 'Space' });
+      items.push(...printItems(obj[key]));
+    });
+    items.push({ type: 'DedentObj' });
+    items.push('}');
+    return [{ type: 'Group', items }];
   }
 
   function serializeKey(key: string | number): string {
@@ -81,6 +134,106 @@ function serialize(obj: unknown): string {
   }
 }
 
+function formatPrintItems(items: readonly PrintItem[], format: FormatObj, baseDepth: number) {
+  let result: string = '';
+  let depth = baseDepth;
+  items.forEach((item) => {
+    if (typeof item === 'string') {
+      result += item;
+      return;
+    }
+    if (format.mode === 'compact') {
+      if (item.type === 'Group') {
+        result += formatPrintItems(item.items, format, depth);
+        return;
+      }
+      return;
+    }
+    if (format.mode === 'line') {
+      switch (item.type) {
+        case 'Group':
+          result += formatPrintItems(item.items, format, depth);
+          return;
+        case 'Line':
+        case 'Space':
+          result += ' ';
+          return;
+        case 'IndentArr':
+        case 'DedentArr':
+          return;
+        case 'IndentObj':
+        case 'DedentObj':
+          result += ' ';
+          return;
+        default:
+          return;
+      }
+    }
+    if (format.mode === 'indent') {
+      const { space = 2 } = format;
+      const padding = ' '.repeat(space);
+      switch (item.type) {
+        case 'Group':
+          result += formatPrintItems(item.items, format, depth);
+          return;
+        case 'Line':
+          result += '\n' + padding.repeat(depth);
+          return;
+        case 'IndentArr':
+        case 'IndentObj':
+          depth += 1;
+          result += '\n' + padding.repeat(depth);
+          return;
+        case 'DedentArr':
+        case 'DedentObj':
+          depth -= 1;
+          result += '\n' + padding.repeat(depth);
+          return;
+        case 'Space':
+          result += ' ';
+          return;
+        default:
+          return;
+      }
+    }
+    if (format.mode === 'pretty') {
+      const { space = 2, threshold = 80 } = format;
+      const padding = ' '.repeat(space);
+      switch (item.type) {
+        case 'Group':
+          const line = formatPrintItems(item.items, { mode: 'line' }, depth);
+          if (line.length <= threshold) {
+            result += line;
+            return;
+          }
+          result += formatPrintItems(item.items, format, depth);
+          return;
+        case 'Line':
+          result += '\n' + padding.repeat(depth);
+          return;
+        case 'IndentArr':
+        case 'IndentObj':
+          depth += 1;
+          result += '\n' + padding.repeat(depth);
+          return;
+        case 'DedentArr':
+        case 'DedentObj':
+          depth -= 1;
+          result += '\n' + padding.repeat(depth);
+          return;
+        case 'Space':
+          result += ' ';
+          return;
+        default:
+          return;
+      }
+    }
+    throw new Error(`Unsuported format ${format as any}`);
+  });
+
+  return result;
+}
+
 function isObject(val: any): boolean {
   return val != null && typeof val === 'object' && Array.isArray(val) === false;
 }
@@ -108,4 +261,23 @@ function isPlainObject(o: any): boolean {
 
   // Most likely a plain Object
   return true;
+}
+
+function resolveFormatObj(format: Format): FormatObj {
+  if (typeof format === 'number') {
+    return { mode: 'indent', space: format };
+  }
+  if (format === 'compact') {
+    return { mode: 'compact' };
+  }
+  if (format === 'indent') {
+    return { mode: 'indent', space: 2 };
+  }
+  if (format === 'line') {
+    return { mode: 'line' };
+  }
+  if (format === 'pretty') {
+    return { mode: 'pretty', threshold: 80, space: 2 };
+  }
+  return format;
 }

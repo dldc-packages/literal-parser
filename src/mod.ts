@@ -1,2 +1,2 @@
 export { Parser } from './Parser';
-export { Serializer } from './Serializer';
+export { Serializer, type Format, type FormatObj } from './Serializer';

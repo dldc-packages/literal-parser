@@ -42,8 +42,10 @@ describe('parse all sort of shape', () => {
 describe('parse then serialize should return the same', () => {
   const SHAPES: Array<string> = [
     '{}',
+    '[]',
     `'foo'`,
     `"john's"`,
+    "'string with backtick ``'",
     '{ foo: {} }',
     `{ 'foo-bar': {} }`,
     '{ foo: {}, bar: {} }',

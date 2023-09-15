@@ -40,6 +40,15 @@ Parser.parseOne('{ props: true }} something="else" />');
 // { value: { props: true }, length: 15 }
 ```
 
-### `Serializer.serialize(obj)`
+### `Serializer.serialize(obj, format?)`
 
 Print an object.
+
+`format` can be one of the following:
+
+| Option                                                   | Shortcut               | Description                                                                                                                                                                 | Defaults                                          |
+| -------------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `{ mode: 'line' }`                                       | `'line'`               | Print on a single line with spaces                                                                                                                                          |                                                   |
+| `{ mode: 'compact' }`                                    | `'compact'`            | Print on a single line without any spces                                                                                                                                    |                                                   |
+| `{ mode: 'indent'; space?: number }`                     | `'indent'` or `number` | Similar to `JSON.stringify(obj, null, indent)`.                                                                                                                             | By default `space` is `2`                         |
+| `{ mode: 'pretty'; threshold?: number; space?: number }` | `'pretty'`             | Inspired by prettier, this mode will try to print objects and arrays on a single line, if the result is bigger than the `threshold` then it's splitted into multiple lines. | By default `space` is `2` and `threshold` is `80` |
