@@ -25,13 +25,13 @@ Take a look at the tests see what is supported.
 
 ### `Parser.parse(str)`
 
-Parse the string, expect the string to contain only one expression and throw otherwise.
+> Parse the string, expect the string to contain only one expression and throw otherwise.
 
 Return the parsed object.
 
 ### `Parser.parseOne(str)`
 
-Parse one expression then stop.
+> Parse one expression then stop.
 
 Returns a object with `{ value, length }` where `value` is the parsed expression and `length` is the number of character parsed.
 
@@ -42,7 +42,7 @@ Parser.parseOne('{ props: true }} something="else" />');
 
 ### `Serializer.serialize(obj, format?)`
 
-Print an object.
+> Print an object.
 
 `format` is optional and can be one of the following:
 
