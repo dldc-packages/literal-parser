@@ -48,7 +48,7 @@ Parser.parseOne('{ props: true }} something="else" />');
 
 #### `{ mode: 'line' } | 'line'`
 
-> Print on a single line with spaces.
+> Print on a single line with spaces. _This is the default format_
 
 #### `{ mode: 'compact' } | 'compact'`
 
