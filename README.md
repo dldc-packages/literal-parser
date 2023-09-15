@@ -46,9 +46,35 @@ Print an object.
 
 `format` is an optional object with a `mode` property that can be one of the following:
 
-| Mode                   | Options                                                | Shortcut               | Description                                                                                                                                                                 |
-| ---------------------- | ------------------------------------------------------ | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `{ mode: 'line' }`     |                                                        | `'line'`               | Print on a single line with spaces                                                                                                                                          |
-| `{ mode: 'compact' }`  |                                                        | `'compact'`            | Print on a single line without any spces                                                                                                                                    |
-| `{ mode: 'indent'; }`  | - `space` (default: `2`)                               | `'indent'` or `number` | Similar to `JSON.stringify(obj, null, indent)`.                                                                                                                             |
-| `{ mode: 'pretty';  }` | - `space` (default: `2`) - `threshold` (default: `80`) | `'pretty'`             | Inspired by prettier, this mode will try to print objects and arrays on a single line, if the result is bigger than the `threshold` then it's splitted into multiple lines. |
+#### `{ mode: 'line' }`
+
+> Print on a single line with spaces.
+
+Shortcut: `'line'`
+
+#### `{ mode: 'compact' }`
+
+> Print on a single line without any spaces.
+
+Shortcut: `'compact'`
+
+#### `{ mode: 'indent' }`
+
+> Similar to `JSON.stringify(obj, null, indent)`.
+
+Options:
+
+- `space` (default: `2`)
+
+Shortcut: `'indent'` or a `number` to specify the number of spaces.
+
+#### `{ mode: 'pretty' }`
+
+> Inspired by prettier, this mode will try to print objects and arrays on a single line, if the result is bigger than the `threshold` then it's splitted into multiple lines.
+
+Options:
+
+- `space` (default: `2`)
+- `threshold` (default: `80`)
+
+Shortcut: `'pretty'`
