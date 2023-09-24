@@ -1,6 +1,6 @@
 {
   "name": "@dldc/literal-parser",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "A small library to parse JavaScript array/object literal",
   "keywords": [],
   "homepage": "https://github.com/dldc-packages/literal-parser#readme",
