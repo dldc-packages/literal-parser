@@ -200,7 +200,7 @@ function formatPrintItems(items: readonly PrintItem[], format: FormatObj, baseDe
       const { space = 2, threshold = 80 } = format;
       const padding = ' '.repeat(space);
       switch (item.type) {
-        case 'Group':
+        case 'Group': {
           const line = formatPrintItems(item.items, { mode: 'line' }, depth);
           if (line.length <= threshold) {
             result += line;
@@ -208,6 +208,7 @@ function formatPrintItems(items: readonly PrintItem[], format: FormatObj, baseDe
           }
           result += formatPrintItems(item.items, format, depth);
           return;
+        }
         case 'Line':
           result += '\n' + padding.repeat(depth);
           return;
@@ -254,8 +255,7 @@ function isPlainObject(o: any): boolean {
   if (isObjectObject(prot) === false) return false;
 
   // If constructor does not have an Object-specific method
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  if (prot.hasOwnProperty('isPrototypeOf') === false) {
+  if (Object.prototype.hasOwnProperty.call(prot, 'isPrototypeOf') === false) {
     return false;
   }
 
